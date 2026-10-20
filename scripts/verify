@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# The repository's one verify command (dev.toml [verify]). Swift-free, so it
+# runs on Linux (the PC has no Swift): shell syntax of scripts/, then the
+# Python tests in tests/, which check the XcodeGen spec (project.yml), the
+# Swift package layout and that generated or private files are not in git.
+# Building and testing the app itself is the owner's, in Xcode on a Mac
+# (README "Build"); CI's macos job does the same where Actions runs.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+mapfile -t scripts < <(git ls-files --cached --others --exclude-standard -- 'scripts/*')
+for script in "${scripts[@]}"; do
+  bash -n "$script"
+done
+
+# The tests parse YAML with PyYAML: the system's if it has it, else a pinned
+# one through uv.
+if python3 -c 'import yaml' 2>/dev/null; then
+  python3 -B -m unittest discover -s tests -t . -v
+elif command -v uv >/dev/null 2>&1; then
+  PYTHONDONTWRITEBYTECODE=1 uv run --no-project --quiet --with 'pyyaml==6.0.3' \
+    python -B -m unittest discover -s tests -t . -v
+else
+  echo "verify: needs PyYAML (python3 -m pip install pyyaml) or uv" >&2
+  exit 1
+fi

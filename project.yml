@@ -1,0 +1,52 @@
+# The Xcode project is generated from this spec by XcodeGen (version pinned in
+# .github/workflows/ci.yml); the .xcodeproj is not committed.
+#   xcodegen generate --spec project.yml
+# It is unsigned (DEVELOPMENT_TEAM is empty). To run on an iPhone, a
+# git-ignored project.local.yml includes this file and adds your team
+# (project.local.yml.example).
+name: Jobtrack
+options:
+  bundleIdPrefix: com.scshafe
+  deploymentTarget:
+    iOS: "26.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Automatic
+packages:
+  JobtrackKit:
+    path: JobtrackKit
+targets:
+  Jobtrack:
+    type: application
+    platform: iOS
+    sources:
+      - path: Jobtrack
+    dependencies:
+      - package: JobtrackKit
+    info:
+      path: Jobtrack/Info.plist
+      properties:
+        CFBundleDisplayName: jobtrack
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.scshafe.jobtrack
+        TARGETED_DEVICE_FAMILY: "1"
+        ENABLE_PREVIEWS: YES
+schemes:
+  Jobtrack:
+    build:
+      targets:
+        Jobtrack: all
+    run:
+      config: Debug
