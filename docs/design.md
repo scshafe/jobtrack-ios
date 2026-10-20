@@ -41,18 +41,17 @@ Columns are the fixed set already in `Column.swift`. Each card has a
 column, allowed target columns/transitions, gate flags, and any in-flight or
 refused request **[pending: exact shape]**.
 
-- Column ↔ jobtrack state mapping is **server-provided** (each card carries
-  its column), with a client-side table only as a fallback for display. The
-  mapping of jobtrack's real states to the seven columns is jobtrack's to
-  state **[pending]**; see decision 2.
+- Column ↔ jobtrack state mapping is **server-owned** (decision 2): each
+  card carries its column and its allowed moves; a client-side table is
+  display fallback only. The concrete mapping is jobtrack's to state
+  **[pending]**.
 - **Drag** (iPhone: long-press drag between columns, plus a "Move to…" action
   sheet as the accessible alternative). Drop targets not in the card's allowed
   transitions are dimmed and reject the drop.
 - **Gated moves** (submit application, offer decision) show a confirmation
   sheet naming the card and the consequence before the request is filed.
-- The board shows one column at a time at iPhone width (paged, column picker
-  on top); the skeleton's horizontal scroll is kept for landscape-free
-  iPhone only if the owner prefers it (decision 3).
+- iPhone layout (one column at a time with a picker, or all seven scrolling
+  horizontally) is **open**, decision 3.
 
 ## Requests and pending state
 
@@ -86,7 +85,7 @@ request; gated actions confirm first. The tab badge is the queue count.
 
 As mailroom-ios (`docs/design-inbox-zero.md`, "Push (APNs)"): the server
 sends through Apple, the payload carries **no job content**, only an opaque
-id plus a generic alert text ("jobtrack: something needs you"). On receipt
+id plus alert text from fixed generic wording or counts only ("jobtrack: something needs you", "3 items need you"). On receipt
 (visible push, tap, or foreground), the app resolves the id over the tailnet
 to learn what changed and refreshes. Device-token registration is a call to
 the API **[pending]**. APNs keys and server sending are the owner session's.
@@ -139,24 +138,26 @@ triggers one silent refresh then sign-in; a 4xx on a request marks it
 
 ## Owner decisions
 
-1. **Wait for jobtrack's design before milestone 3?** Milestones 1 to 2 can
-   proceed on this document; 3 onward depend on the API contract. Confirm this
-   order, or hold everything until jobtrack's design lands.
-2. **Column mapping source.** Server-provided column per card (my
-   recommendation: one source of truth) versus the app owning the
-   state→column table. Needs the same answer from jobtrack's agent.
-3. **Board layout on iPhone.** One column at a time with a picker
-   (recommended; cards stay readable) versus the skeleton's horizontal scroll
-   of all seven columns.
-4. **Idempotency key.** I assume the API accepts a client-generated request
-   id and returns the same request on repeat. If the owner prefers otherwise
-   (e.g. server-assigned ids only), offline capture queueing needs a
-   different dedupe.
-5. **Push alert text.** Generic fixed text ("something needs you") with no
-   job content, or silent pushes only (content-available) with a local
-   notification built after resolving the id. The first leaks nothing
-   through Apple; the second is richer but unreliable on iOS.
-6. **Extension and keychain group.** The share extension needs an App Group /
-   keychain access group in the Apple developer account, with the
-   `DEVELOPMENT_TEAM` the owner sets locally. Confirm the group id
-   (suggested: `group.com.scshafe.jobtrack`).
+Answered by the owner session on PR #1 unless marked open.
+
+1. **Order of work: decided.** Milestones 1 to 2 proceed now. Milestone 3
+   onward waits for jobtrack's `docs/design-mobile-and-discovery.md`.
+2. **Column mapping source: decided.** The server owns the state→column
+   mapping (columns map to jobtrack's real states). The app renders the
+   column each card carries and the moves the server says are allowed; any
+   client-side table is display fallback only.
+3. **Board layout on iPhone: open.** One column at a time with a picker
+   (my recommendation; cards stay readable) versus the skeleton's horizontal
+   scroll of all seven columns. The owner is deciding; no board layout work
+   past the skeleton until he does.
+4. **Idempotency key: decided as an assumption, still [pending].** Assume a
+   client-generated request id. It will be filed as an agent-request to
+   jobtrack once requests are enabled (not yet), and stays [pending] until
+   jobtrack's design confirms it.
+5. **Push text: decided.** Follow mailroom-ios's accepted pattern: an opaque
+   push id, alert text from fixed generic wording or counts only, details
+   fetched over the tailnet. A Notification Service Extension showing
+   company/role on the lock screen is a later option, not v1.
+6. **App Group and bundle ids: decided.** App Group and keychain access
+   group `group.com.scshafe.jobtrack`; bundle ids `com.scshafe.jobtrack`
+   (app) and `com.scshafe.jobtrack.share` (share extension).
