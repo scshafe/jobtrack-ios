@@ -4,6 +4,7 @@ import SwiftUI
 /// The board. iPhone: a stage picker with counts and one full-width column.
 /// iPad: all columns side by side (docs/design.md, decision 3).
 struct BoardView: View {
+    var signIn: SignInModel?
     @State private var model = BoardModel(api: FakeAPIClient())
     @State private var selected = Column.found
     @State private var confirming: (card: BoardCard, target: Column)?
@@ -34,6 +35,11 @@ struct BoardView: View {
                 }
             }
             .navigationTitle("jobtrack")
+            .toolbar {
+                if let signIn, signIn.isConfigured {
+                    Button("Sign out") { Task { await signIn.signOut() } }
+                }
+            }
             .task { await model.load() }
             .refreshable { await model.load() }
             .confirmationDialog(

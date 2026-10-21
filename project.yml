@@ -16,6 +16,9 @@ settings:
     MARKETING_VERSION: "0.1.0"
     CURRENT_PROJECT_VERSION: "1"
     DEVELOPMENT_TEAM: ""
+    # Sign-in configuration: set in the git-ignored project.local.yml.
+    JOBTRACK_ISSUER: ""
+    JOBTRACK_CLIENT_ID: ""
     CODE_SIGN_STYLE: Automatic
 packages:
   JobtrackKit:
@@ -34,6 +37,8 @@ targets:
         CFBundleDisplayName: jobtrack
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        JobtrackIssuer: $(JOBTRACK_ISSUER)
+        JobtrackClientID: $(JOBTRACK_CLIENT_ID)
         UILaunchScreen: {}
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         UIApplicationSceneManifest:
