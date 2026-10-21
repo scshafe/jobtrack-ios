@@ -45,13 +45,15 @@ refused request **[pending: exact shape]**.
   card carries its column and its allowed moves; a client-side table is
   display fallback only. The concrete mapping is jobtrack's to state
   **[pending]**.
-- **Drag** (iPhone: long-press drag between columns, plus a "Move to…" action
-  sheet as the accessible alternative). Drop targets not in the card's allowed
-  transitions are dimmed and reject the drop.
+- **Moves.** On iPhone only "Move to…" (no cross-column drag). On iPad,
+  drag between side-by-side columns as well; drop targets outside the card's
+  allowed moves are dimmed and reject the drop.
 - **Gated moves** (submit application, offer decision) show a confirmation
   sheet naming the card and the consequence before the request is filed.
-- iPhone layout (one column at a time with a picker, or all seven scrolling
-  horizontally) is **open**, decision 3.
+- **Layout (decision 3).** On iPhone: a stage picker across the top showing
+  each column's count, and one full-width column below it. Moving a card is
+  long-press → "Move to…", listing only the stages the card's allowed moves
+  permit. On iPad: all columns side by side.
 
 ## Requests and pending state
 
@@ -123,7 +125,7 @@ triggers one silent refresh then sign-in; a 4xx on a request marks it
   queue persistence.
 - `./scripts/verify` stays Swift-free (layout, XcodeGen spec).
 - CI's macOS job runs `swift test` and the simulator build. Each PR states
-  what needs a check on the Air (drag, share sheet, sign-in and push can only
+  what needs a check on the Air (iPad drag, share sheet, sign-in and push can only
   be checked on a device).
 
 ## Milestones (each its own PR, after acceptance)
@@ -138,7 +140,7 @@ triggers one silent refresh then sign-in; a 4xx on a request marks it
 
 ## Owner decisions
 
-Answered by the owner session on PR #1 unless marked open.
+Answered by the owner session on PR #1.
 
 1. **Order of work: decided.** Milestones 1 to 2 proceed now. Milestone 3
    onward waits for jobtrack's `docs/design-mobile-and-discovery.md`.
@@ -146,10 +148,10 @@ Answered by the owner session on PR #1 unless marked open.
    mapping (columns map to jobtrack's real states). The app renders the
    column each card carries and the moves the server says are allowed; any
    client-side table is display fallback only.
-3. **Board layout on iPhone: open.** One column at a time with a picker
-   (my recommendation; cards stay readable) versus the skeleton's horizontal
-   scroll of all seven columns. The owner is deciding; no board layout work
-   past the skeleton until he does.
+3. **Board layout: decided.** iPhone shows one column at a time: a stage
+   picker across the top with counts, one full-width column, and
+   long-press → "Move to…" limited to the allowed stages. iPad shows all
+   columns side by side.
 4. **Idempotency key: decided as an assumption, still [pending].** Assume a
    client-generated request id. It will be filed as an agent-request to
    jobtrack once requests are enabled (not yet), and stays [pending] until
