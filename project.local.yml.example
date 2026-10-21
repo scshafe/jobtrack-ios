@@ -9,3 +9,7 @@ settings:
   base:
     DEVELOPMENT_TEAM: ABCDE12345   # your Team ID: 10 characters, not a secret
     CODE_SIGN_STYLE: Automatic
+    # Sign-in (the owner session provisions the Pocket ID client). Leave empty
+    # to run on the fixture board without signing in.
+    JOBTRACK_ISSUER: https://id.example.invalid   # your Pocket ID URL
+    JOBTRACK_CLIENT_ID: your-client-id
